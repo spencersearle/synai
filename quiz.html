@@ -30,25 +30,21 @@
       </div>
 
       <div class="q-card" id="q-card">
-        <p class="eyebrow">Tap the one you'd watch tonight</p>
-        <h2 id="q-prompt">Which <em>wins</em>?</h2>
-        <div class="matchup" id="matchup">
-          <button class="pick" id="pick-a" type="button"></button>
-          <span class="vs" aria-hidden="true">or</span>
-          <button class="pick" id="pick-b" type="button"></button>
-        </div>
+        <p class="eyebrow" id="q-kicker">Right now</p>
+        <h2 id="q-prompt"></h2>
+        <div id="q-body"></div>
       </div>
 
       <div class="q-foot" id="q-foot">
         <button class="ghost-btn" id="q-back" type="button">← Back</button>
-        <span id="q-hint">No wrong answers</span>
+        <span id="q-hint">Go with your gut · no wrong answers</span>
       </div>
 
       <section class="results" id="results" aria-live="polite">
         <div class="results-head">
           <p class="eyebrow" style="text-align:center">Your shortlist</p>
           <h2>Made <em>for you</em></h2>
-          <p>Ranked by match — movies and series mixed.</p>
+          <p>Ranked for your mood tonight. Tap any poster to see what it's about.</p>
         </div>
         <div class="taste-summary" id="taste-summary"></div>
         <div class="rec-grid" id="rec-grid"></div>
@@ -61,7 +57,24 @@
     </div>
   </main>
 
+  <!-- movie detail modal -->
+  <div class="modal" id="movie-modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="m-title">
+      <button class="modal-close" type="button" data-close aria-label="Close">✕</button>
+      <img class="modal-poster" id="m-poster" alt="" width="500" height="750" />
+      <div class="modal-body">
+        <p class="m-meta" id="m-meta"></p>
+        <h3 id="m-title"></h3>
+        <div class="m-moods" id="m-moods"></div>
+        <p class="m-overview" id="m-overview"></p>
+        <p class="m-match" id="m-match"></p>
+      </div>
+    </div>
+  </div>
+
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/modal.js"></script>
   <script src="assets/js/quiz.js"></script>
 </body>
 </html>

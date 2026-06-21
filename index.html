@@ -46,7 +46,7 @@
             <p class="eyebrow">The catalog</p>
             <h2>Posters you'll recognize.</h2>
           </div>
-          <p>Pick between titles like these — Synai does the rest.</p>
+          <p>Tap any poster to see what it's about.</p>
         </div>
         <div class="poster-grid" id="poster-grid"></div>
       </div>
@@ -67,7 +67,24 @@
     <span>Posters via TMDB · 2026</span>
   </footer>
 
+  <!-- movie detail modal -->
+  <div class="modal" id="movie-modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="m-title">
+      <button class="modal-close" type="button" data-close aria-label="Close">✕</button>
+      <img class="modal-poster" id="m-poster" alt="" width="500" height="750" />
+      <div class="modal-body">
+        <p class="m-meta" id="m-meta"></p>
+        <h3 id="m-title"></h3>
+        <div class="m-moods" id="m-moods"></div>
+        <p class="m-overview" id="m-overview"></p>
+        <p class="m-match" id="m-match"></p>
+      </div>
+    </div>
+  </div>
+
   <script src="assets/js/data.js"></script>
+  <script src="assets/js/modal.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>

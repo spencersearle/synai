@@ -27,11 +27,16 @@
   const grid = document.getElementById('poster-grid');
   if (grid) {
     grid.innerHTML = CATALOG.map((m) =>
-      `<figure class="tile">` +
+      `<button class="tile" type="button" data-id="${m.id}" aria-label="${m.title} — what it's about">` +
         `<img loading="lazy" src="${IMG}${m.poster}" alt="${m.title} poster" width="500" height="750">` +
-        `<figcaption>${m.title} · ${m.year}</figcaption>` +
-      `</figure>`
+        `<span class="t-info" aria-hidden="true">ⓘ</span>` +
+        `<span class="t-cap">${m.title} · ${m.year}</span>` +
+      `</button>`
     ).join('');
+    grid.addEventListener('click', (e) => {
+      const tile = e.target.closest('[data-id]');
+      if (tile) window.openMovieModal(byId(tile.dataset.id));
+    });
   }
 
   /* ---- gentle glow parallax -------------------------------- */
