@@ -10,8 +10,10 @@
     poster: document.getElementById('m-poster'),
     meta: document.getElementById('m-meta'),
     title: document.getElementById('m-title'),
+    facts: document.getElementById('m-facts'),
     moods: document.getElementById('m-moods'),
     overview: document.getElementById('m-overview'),
+    cast: document.getElementById('m-cast'),
     match: document.getElementById('m-match'),
     close: modal.querySelector('.modal-close'),
   };
@@ -24,8 +26,20 @@
     els.poster.alt = m.title + ' poster';
     els.meta.innerHTML = `${m.year} · ${m.kind} · <span class="m-rating">${m.rating}</span> · ${GENRE_LABEL[m.genre]}`;
     els.title.textContent = m.title;
+
+    const isMovie = m.kind === 'Movie';
+    const lengthText = isMovie
+      ? (m.runtime || '')
+      : (m.seasons ? `${m.seasons} season${m.seasons > 1 ? 's' : ''}` : '');
+    const byText = m.by ? `${isMovie ? 'Directed by' : 'Created by'} ${m.by}` : '';
+    els.facts.innerHTML = [lengthText, byText].filter(Boolean).join('  ·  ');
+
     els.moods.innerHTML = (m.moods || []).map((x) => `<span class="m-mood">${MOOD_LABEL[x]}</span>`).join('');
     els.overview.textContent = m.overview;
+    els.cast.innerHTML = (m.cast && m.cast.length)
+      ? `<span class="m-cast-label">Starring</span> ${m.cast.join(', ')}`
+      : '';
+    els.cast.style.display = (m.cast && m.cast.length) ? '' : 'none';
     if (matchText) { els.match.textContent = matchText; els.match.style.display = ''; }
     else { els.match.style.display = 'none'; }
     modal.hidden = false;
