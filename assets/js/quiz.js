@@ -20,6 +20,44 @@
   const history = []; // deltas, for Back
 
   const moodsToObj = (arr) => (arr || []).reduce((o, k) => (o[k] = (o[k] || 0) + 2, o), {});
+  const shuffle = (a) => a.map((v) => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map((p) => p[1]);
+
+  /* ---- build a fresh, randomized quiz every run ------------ */
+  const MOOD_PER_QUIZ = 7;
+  const MATCH_PER_QUIZ = 7;
+
+  function makeMatchups(count) {
+    const pool = shuffle(CATALOG);
+    const used = new Set();
+    const pairs = [];
+    for (let i = 0; i < pool.length && pairs.length < count; i++) {
+      const a = pool[i];
+      if (used.has(a.id)) continue;
+      // pair with the next unused title of a different genre
+      const b = pool.find((m, j) => j > i && !used.has(m.id) && m.genre !== a.genre);
+      if (!b) continue;
+      used.add(a.id); used.add(b.id);
+      pairs.push({ type: 'match', a, b });
+    }
+    return pairs;
+  }
+
+  function buildQuiz() {
+    const moods = shuffle(MOOD_POOL).slice(0, MOOD_PER_QUIZ).map((q) => ({
+      type: 'mood', kicker: q.kicker, q: q.q, options: shuffle(q.options.slice()),
+    }));
+    const matches = makeMatchups(MATCH_PER_QUIZ);
+    // interleave, mood first, so it always opens on a feeling question
+    const out = [];
+    const n = Math.max(moods.length, matches.length);
+    for (let i = 0; i < n; i++) {
+      if (moods[i]) out.push(moods[i]);
+      if (matches[i]) out.push(matches[i]);
+    }
+    return out;
+  }
+
+  let QUESTIONS = buildQuiz();
 
   function applyDelta(d, sign) {
     for (const k in d.taste) taste[k] = (taste[k] || 0) + d.taste[k] * sign;
@@ -155,6 +193,7 @@
     for (const k in taste) delete taste[k];
     for (const k in mood) delete mood[k];
     kindBias = 0; history.length = 0; index = 0;
+    QUESTIONS = buildQuiz(); // fresh, different questions each time
     els.results.classList.remove('show');
     els.card.style.display = '';
     els.foot.style.display = '';

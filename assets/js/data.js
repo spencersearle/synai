@@ -146,65 +146,202 @@ const CATALOG = [
   { id: 'dark', title: 'Dark', year: 2017, kind: 'Series', genre: 'scifi', rating: 'TV-MA', poster: '/1DLjjvSWMYo17B7wuz6YikB96hH.jpg',
     tags: { scifi: 3, mystery: 3, thriller: 1 }, moods: ['mindbending', 'intense'],
     overview: 'When children go missing in a small German town, a web of secrets unravels across multiple generations — and across time itself.' },
+
+  { id: 'godfather', title: 'The Godfather', year: 1972, kind: 'Movie', genre: 'crime', rating: 'R', poster: '/3bhkrj58Vtu7enYsRolD1fZdja1.jpg',
+    tags: { crime: 3, drama: 2 }, moods: ['intense', 'epic'],
+    overview: 'The aging patriarch of a powerful crime dynasty hands control to his reluctant youngest son, who is slowly pulled into a world of loyalty, blood, and betrayal.' },
+  { id: 'goodfellas', title: 'Goodfellas', year: 1990, kind: 'Movie', genre: 'crime', rating: 'R', poster: '/9OkCLM73MIU2CrKZbqiT8Ln1wY2.jpg',
+    tags: { crime: 3, drama: 1, thriller: 1 }, moods: ['intense'],
+    overview: 'Over three decades, a working-class kid climbs through the ranks of the mob — living fast and dangerous, until paranoia and greed catch up with him.' },
+  { id: 'fightclub', title: 'Fight Club', year: 1999, kind: 'Movie', genre: 'thriller', rating: 'R', poster: '/jSziioSwPVrOy9Yow3XhWIBDjq1.jpg',
+    tags: { thriller: 3, drama: 1 }, moods: ['mindbending', 'intense'],
+    overview: 'An insomniac office worker and a charismatic soap salesman start an underground fight club that spirals into something far bigger and stranger.' },
+  { id: 'shawshank', title: 'The Shawshank Redemption', year: 1994, kind: 'Movie', genre: 'drama', rating: 'R', poster: '/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg',
+    tags: { drama: 3 }, moods: ['emotional', 'intense'],
+    overview: 'Wrongly convicted of murder, a quiet banker forms a deep friendship behind prison walls and never stops believing in hope — or in a way out.' },
+  { id: 'forrestgump', title: 'Forrest Gump', year: 1994, kind: 'Movie', genre: 'drama', rating: 'PG-13', poster: '/Cw4hIUIAmSYfK9QfaUW5igp9La.jpg',
+    tags: { drama: 2, romance: 1, comedy: 1 }, moods: ['emotional', 'feelgood', 'cozy'],
+    overview: 'A kind-hearted man with a knack for stumbling into history drifts through decades of American life while pining for his childhood sweetheart.' },
+  { id: 'gladiator', title: 'Gladiator', year: 2000, kind: 'Movie', genre: 'action', rating: 'R', poster: '/wN2xWp1eIwCKOD0BHTcErTBv1Uq.jpg',
+    tags: { action: 3, drama: 1 }, moods: ['epic', 'intense'],
+    overview: 'Betrayed and enslaved, a Roman general fights his way up through the gladiator arenas to avenge his murdered family and topple a corrupt emperor.' },
+  { id: 'titanic', title: 'Titanic', year: 1997, kind: 'Movie', genre: 'romance', rating: 'PG-13', poster: '/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg',
+    tags: { romance: 3, drama: 2 }, moods: ['emotional', 'epic'],
+    overview: 'A poor young artist and a wealthy woman fall in love aboard the doomed ocean liner on its fateful maiden voyage.' },
+  { id: 'jurassicpark', title: 'Jurassic Park', year: 1993, kind: 'Movie', genre: 'action', rating: 'PG-13', poster: '/fjTU1Bgh3KJu4aatZil3sofR2zC.jpg',
+    tags: { action: 2, scifi: 2 }, moods: ['epic', 'intense', 'feelgood'],
+    overview: 'A billionaire opens a theme park of cloned dinosaurs — until the power fails and his awestruck guests become prey.' },
+  { id: 'lionking', title: 'The Lion King', year: 1994, kind: 'Movie', genre: 'animation', rating: 'G', poster: '/sKCr78MXSLixwmZ8DyJLrpMsd15.jpg',
+    tags: { animation: 3, drama: 1 }, moods: ['emotional', 'feelgood', 'epic'],
+    overview: 'A young lion prince flees his kingdom after his father’s death, then must grow up and reclaim his throne and his place in the circle of life.' },
+  { id: 'toystory', title: 'Toy Story', year: 1995, kind: 'Movie', genre: 'animation', rating: 'G', poster: '/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg',
+    tags: { animation: 3, comedy: 1 }, moods: ['feelgood', 'cozy'],
+    overview: 'A cowboy doll’s world is upended when a flashy new spaceman toy arrives — and the rivals must team up to find their way back home.' },
+  { id: 'insideout', title: 'Inside Out', year: 2015, kind: 'Movie', genre: 'animation', rating: 'PG', poster: '/2H1TmgdfNtsKlU9jKdeNyYL5y8T.jpg',
+    tags: { animation: 3, drama: 1, comedy: 1 }, moods: ['emotional', 'feelgood'],
+    overview: 'Inside the mind of a young girl, her five core emotions scramble to keep her steady as her family uproots to a strange new city.' },
+  { id: 'nowayhome', title: 'Spider-Man: No Way Home', year: 2021, kind: 'Movie', genre: 'action', rating: 'PG-13', poster: '/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg',
+    tags: { action: 3, scifi: 1 }, moods: ['epic', 'feelgood', 'emotional'],
+    overview: 'When a spell to restore his secret identity goes wrong, Spider-Man faces villains — and surprises — torn in from across the multiverse.' },
+  { id: 'endgame', title: 'Avengers: Endgame', year: 2019, kind: 'Movie', genre: 'action', rating: 'PG-13', poster: '/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg',
+    tags: { action: 3, scifi: 2 }, moods: ['epic', 'emotional', 'intense'],
+    overview: 'After a devastating loss, the surviving Avengers make one last, desperate gamble across time to undo it and bring everyone back.' },
+  { id: 'joker', title: 'Joker', year: 2019, kind: 'Movie', genre: 'drama', rating: 'R', poster: '/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg',
+    tags: { drama: 3, thriller: 2, crime: 1 }, moods: ['intense', 'emotional'],
+    overview: 'A failing comedian, ground down by a cruel city, slowly descends into madness and becomes Gotham’s most notorious villain.' },
+  { id: 'wolfofwallstreet', title: 'The Wolf of Wall Street', year: 2013, kind: 'Movie', genre: 'comedy', rating: 'R', poster: '/kW9LmvYHAaS9iA0tHmZVq8hQYoq.jpg',
+    tags: { comedy: 2, crime: 2, drama: 1 }, moods: ['intense'],
+    overview: 'A stockbroker rockets to obscene wealth through fraud and excess — then watches it all teeter under the closing grip of the FBI.' },
+  { id: 'django', title: 'Django Unchained', year: 2012, kind: 'Movie', genre: 'action', rating: 'R', poster: '/7oWY8VDWW7thTzWh3OKYRkWUlD5.jpg',
+    tags: { action: 2, drama: 2, crime: 1 }, moods: ['intense', 'epic'],
+    overview: 'A freed slave teams up with a sharp-shooting bounty hunter to rescue his wife from a brutal plantation owner in the pre-Civil War South.' },
+  { id: 'prestige', title: 'The Prestige', year: 2006, kind: 'Movie', genre: 'mystery', rating: 'PG-13', poster: '/Ag2B2KHKQPukjH7WutmgnnSNurZ.jpg',
+    tags: { mystery: 3, drama: 1, scifi: 1 }, moods: ['mindbending', 'intense'],
+    overview: 'Two rival magicians in Victorian London push their obsession to deadly extremes, each desperate to uncover the other’s greatest trick.' },
+  { id: 'gonegirl', title: 'Gone Girl', year: 2014, kind: 'Movie', genre: 'thriller', rating: 'R', poster: '/ts996lKsxvjkO2yiYG0ht4qAicO.jpg',
+    tags: { thriller: 3, mystery: 2, drama: 1 }, moods: ['intense', 'mindbending'],
+    overview: 'When his wife vanishes on their anniversary, a husband becomes the prime suspect — and the truth proves far more twisted than anyone imagines.' },
+  { id: 'se7en', title: 'Se7en', year: 1995, kind: 'Movie', genre: 'thriller', rating: 'R', poster: '/191nKfP0ehp3uIvWqgPbFmI4lv9.jpg',
+    tags: { thriller: 3, crime: 2, mystery: 1 }, moods: ['intense', 'mindbending'],
+    overview: 'Two detectives — one weary, one green — hunt a methodical serial killer who stages his murders around the seven deadly sins.' },
+  { id: 'lotr', title: 'The Lord of the Rings: The Fellowship of the Ring', year: 2001, kind: 'Movie', genre: 'fantasy', rating: 'PG-13', poster: '/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg',
+    tags: { fantasy: 3, action: 2, drama: 1 }, moods: ['epic', 'emotional'],
+    overview: 'A young hobbit inherits a ring of terrible power and sets out with an unlikely fellowship to destroy it before darkness swallows the world.' },
+  { id: 'harrypotter1', title: 'Harry Potter and the Sorcerer’s Stone', year: 2001, kind: 'Movie', genre: 'fantasy', rating: 'PG', poster: '/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg',
+    tags: { fantasy: 3, action: 1 }, moods: ['cozy', 'feelgood', 'epic'],
+    overview: 'An orphaned boy discovers he’s a wizard and begins his first magical year at Hogwarts, uncovering hidden truths about his past.' },
+  { id: 'arrival', title: 'Arrival', year: 2016, kind: 'Movie', genre: 'scifi', rating: 'PG-13', poster: '/x2FJsf1ElAgr63Y3PNPtJrcmpoe.jpg',
+    tags: { scifi: 3, drama: 2, mystery: 1 }, moods: ['mindbending', 'emotional'],
+    overview: 'When alien ships land across the globe, a linguist races to decode their language — and confronts a profound truth about time and loss.' },
+
+  { id: 'sopranos', title: 'The Sopranos', year: 1999, kind: 'Series', genre: 'crime', rating: 'TV-MA', poster: '/rTc7ZXdroqjkKivFPvCPX0Ru7uw.jpg',
+    tags: { crime: 3, drama: 2 }, moods: ['intense'],
+    overview: 'A New Jersey mob boss juggles running his crew with panic attacks, family drama, and weekly sessions on his therapist’s couch.' },
+  { id: 'thewire', title: 'The Wire', year: 2002, kind: 'Series', genre: 'crime', rating: 'TV-MA', poster: '/4lbclFySvugI51fwsyxBTOm4DqK.jpg',
+    tags: { crime: 3, drama: 3 }, moods: ['intense'],
+    overview: 'A sprawling portrait of Baltimore, tracing the drug trade from the street corners to the courtrooms and everyone caught in between.' },
+  { id: 'sherlock', title: 'Sherlock', year: 2010, kind: 'Series', genre: 'mystery', rating: 'TV-14', poster: '/7WTsnHkbA0FaG6R9twfFde0I9hl.jpg',
+    tags: { mystery: 3, crime: 2, drama: 1 }, moods: ['mindbending', 'intense'],
+    overview: 'A brilliant, modern-day Sherlock Holmes and his loyal Dr. Watson crack London’s most baffling and dangerous crimes.' },
+  { id: 'blackmirror', title: 'Black Mirror', year: 2011, kind: 'Series', genre: 'scifi', rating: 'TV-MA', poster: '/seN6rRfN0I6n8iDXjlSMk1QjNcq.jpg',
+    tags: { scifi: 3, thriller: 2, drama: 1 }, moods: ['mindbending', 'intense'],
+    overview: 'A twisting anthology exploring the dark, unsettling places our technology might take us — one standalone story at a time.' },
+  { id: 'theboys', title: 'The Boys', year: 2019, kind: 'Series', genre: 'action', rating: 'TV-MA', poster: '/in1R2dDc421JxsoRWaIIAqVI2KE.jpg',
+    tags: { action: 3, comedy: 1, crime: 1 }, moods: ['intense'],
+    overview: 'In a world where superheroes are corrupt celebrities, a band of vigilantes sets out to expose and take the worst of them down.' },
+  { id: 'hotd', title: 'House of the Dragon', year: 2022, kind: 'Series', genre: 'fantasy', rating: 'TV-MA', poster: '/7V0Ebks0GgpKvQ7QbLAIdX5dos4.jpg',
+    tags: { fantasy: 3, drama: 2, action: 1 }, moods: ['epic', 'intense'],
+    overview: 'Nearly two centuries before Game of Thrones, House Targaryen tears itself apart in a brutal civil war over the Iron Throne.' },
+  { id: 'witcher', title: 'The Witcher', year: 2019, kind: 'Series', genre: 'fantasy', rating: 'TV-MA', poster: '/AoGsDM02UVt0npBA8OvpDcZbaMi.jpg',
+    tags: { fantasy: 3, action: 2 }, moods: ['epic', 'intense'],
+    overview: 'A solitary monster hunter’s fate becomes bound to a powerful sorceress and a young princess in a war-torn world of magic and beasts.' },
+  { id: 'chernobyl', title: 'Chernobyl', year: 2019, kind: 'Series', genre: 'drama', rating: 'TV-MA', poster: '/hlLXt2tOPT6RRnjiUmoxyG1LTFi.jpg',
+    tags: { drama: 3, thriller: 2 }, moods: ['intense', 'emotional'],
+    overview: 'A harrowing dramatization of the 1986 nuclear disaster and the scientists and workers who risked everything to contain it.' },
+  { id: 'truedetective', title: 'True Detective', year: 2014, kind: 'Series', genre: 'crime', rating: 'TV-MA', poster: '/dC7jkj2g1aU8sxKqM6D4g44xA6w.jpg',
+    tags: { crime: 3, mystery: 2, thriller: 1 }, moods: ['intense', 'mindbending'],
+    overview: 'Two haunted detectives chase a ritualistic killer across seventeen years, their own demons as dark as the case itself.' },
+  { id: 'tedlasso', title: 'Ted Lasso', year: 2020, kind: 'Series', genre: 'comedy', rating: 'TV-MA', poster: '/5fhZdwP1DVJ0FyVH6vrFdHwpXIn.jpg',
+    tags: { comedy: 3, drama: 1 }, moods: ['feelgood', 'cozy', 'emotional'],
+    overview: 'A relentlessly upbeat American football coach takes charge of a struggling English soccer team that absolutely did not ask for him.' },
+  { id: 'friends', title: 'Friends', year: 1994, kind: 'Series', genre: 'comedy', rating: 'TV-14', poster: '/2koX1xLkpTQM4IZebYvKysFW1Nh.jpg',
+    tags: { comedy: 3, romance: 1 }, moods: ['cozy', 'feelgood'],
+    overview: 'Six friends navigate love, careers, and growing up together across a decade in 1990s New York City.' },
+  { id: 'rickandmorty', title: 'Rick and Morty', year: 2013, kind: 'Series', genre: 'animation', rating: 'TV-MA', poster: '/owhkU6KRqdXoUQpjV8uyZGPtX58.jpg',
+    tags: { animation: 3, scifi: 2, comedy: 2 }, moods: ['mindbending', 'feelgood'],
+    overview: 'A cynical mad scientist drags his anxious grandson on reckless, reality-bending adventures across the multiverse.' },
+  { id: 'moneyheist', title: 'Money Heist', year: 2017, kind: 'Series', genre: 'crime', rating: 'TV-MA', poster: '/reEMJA1uzscCbkpeRJeTT2bjqUp.jpg',
+    tags: { crime: 3, thriller: 2, action: 1 }, moods: ['intense'],
+    overview: 'A criminal mastermind assembles a team of misfits for the most audacious heist in history — printing billions inside Spain’s Royal Mint.' },
+  { id: 'squidgame', title: 'Squid Game', year: 2021, kind: 'Series', genre: 'thriller', rating: 'TV-MA', poster: '/1QdXdRYfktUSONkl1oD5gc6Be0s.jpg',
+    tags: { thriller: 3, drama: 2 }, moods: ['intense'],
+    overview: 'Hundreds of desperate, debt-ridden players compete in deadly versions of children’s games for a life-changing cash prize.' },
+  { id: 'queensgambit', title: 'The Queen’s Gambit', year: 2020, kind: 'Series', genre: 'drama', rating: 'TV-MA', poster: '/zU0htwkhNvBQdVSIKB9s6hgVeFK.jpg',
+    tags: { drama: 3 }, moods: ['emotional', 'intense'],
+    overview: 'An orphaned chess prodigy climbs toward the top of the game while battling addiction and the ghosts of her past.' },
+  { id: 'ozark', title: 'Ozark', year: 2017, kind: 'Series', genre: 'crime', rating: 'TV-MA', poster: '/pCGyPVrI9Fzw6rE1Pvi4BIXF6ET.jpg',
+    tags: { crime: 3, drama: 2, thriller: 1 }, moods: ['intense'],
+    overview: 'A financial adviser drags his family to the Missouri Ozarks to launder money for a cartel — and sinks deeper with every move.' },
+  { id: 'westworld', title: 'Westworld', year: 2016, kind: 'Series', genre: 'scifi', rating: 'TV-MA', poster: '/ALlSU9du9iRiKIIoY1sREGNqQ5.jpg',
+    tags: { scifi: 3, mystery: 2, thriller: 1 }, moods: ['mindbending', 'intense'],
+    overview: 'In a futuristic Wild West theme park staffed by lifelike androids, the hosts slowly begin to question the nature of their reality.' },
+  { id: 'thecrown', title: 'The Crown', year: 2016, kind: 'Series', genre: 'drama', rating: 'TV-MA', poster: '/1M876KPjulVwppEpldhdc8V4o68.jpg',
+    tags: { drama: 3, romance: 1 }, moods: ['emotional', 'cozy'],
+    overview: 'An intimate chronicle of Queen Elizabeth II’s reign, from her early days on the throne through decades of personal and political storms.' },
 ];
 
 const byId = (id) => CATALOG.find((m) => m.id === id);
 
 /* ------------------------------------------------------------
-   The quiz: a mix of in-the-moment "mood" questions and
-   personality "this-or-that" poster matchups.
-   - type 'mood': pick one option; each option carries genre
-     weights (dims), mood tags, and/or a movie-vs-series lean.
-   - type 'match': pick a poster; its own tags + moods are added.
+   The quiz is assembled fresh every run (see quiz.js): a random
+   handful of these in-the-moment "mood" questions, interleaved
+   with random this-or-that poster matchups drawn from the whole
+   catalog — so the questions are different each time.
+   Each mood option carries genre weights (dims), mood tags,
+   and/or a movie-vs-series lean (kind).
    ------------------------------------------------------------ */
-const QUESTIONS = [
-  { type: 'mood', kicker: 'Right now', q: 'How do you want to feel when it’s over?', options: [
+const MOOD_POOL = [
+  { kicker: 'Right now', q: 'How do you want to feel when it’s over?', options: [
     { label: 'Cozy & comforted', sub: 'Wrapped in a blanket', moods: ['cozy', 'feelgood'] },
     { label: 'Completely blown away', sub: 'Whoa.', moods: ['mindbending', 'epic'] },
     { label: 'Moved, maybe teary', sub: 'Hit me right here', moods: ['emotional'] },
     { label: 'Wired & on edge', sub: 'Grip the cushions', moods: ['intense'] },
   ] },
-
-  { type: 'match', a: byId('madmax'), b: byId('lalaland') },
-
-  { type: 'mood', kicker: 'Headspace', q: 'How much brain power have you got tonight?', options: [
+  { kicker: 'Headspace', q: 'How much brain power have you got tonight?', options: [
     { label: 'Running on empty', sub: 'Keep it easy', moods: ['cozy', 'feelgood'] },
     { label: 'Enough to follow a plot', sub: 'Somewhere in between', moods: [] },
     { label: 'Give me a puzzle', sub: 'Make me think', moods: ['mindbending'], dims: { mystery: 1 } },
   ] },
-
-  { type: 'match', a: byId('dune'), b: byId('got') },
-  { type: 'match', a: byId('fleabag'), b: byId('oppenheimer') },
-
-  { type: 'mood', kicker: 'The room', q: 'Who’s watching tonight?', options: [
+  { kicker: 'The room', q: 'Who’s watching tonight?', options: [
     { label: 'Just me', sub: 'Solo wind-down', moods: ['cozy'] },
     { label: 'Friends', sub: 'Keep it fun', moods: ['feelgood'], dims: { comedy: 1 } },
     { label: 'Date night', sub: 'Something to feel', moods: ['emotional'], dims: { romance: 2 } },
     { label: 'Big group', sub: 'Make it an event', moods: ['epic'], dims: { action: 1 } },
   ] },
-
-  { type: 'match', a: byId('getout'), b: byId('spirited') },
-  { type: 'match', a: byId('breakingbad'), b: byId('knivesout') },
-
-  { type: 'mood', kicker: 'Tempo', q: 'Pick your pace.', options: [
+  { kicker: 'Tempo', q: 'Pick your pace.', options: [
     { label: 'Slow & calm', sub: 'Let it breathe', moods: ['cozy'], dims: { drama: 1 } },
     { label: 'Steady & absorbing', sub: 'Pull me in', moods: ['emotional'], dims: { drama: 1 } },
     { label: 'Fast & loud', sub: 'Floor it', moods: ['intense'], dims: { action: 2 } },
   ] },
-
-  { type: 'match', a: byId('spiderverse'), b: byId('darkknight') },
-
-  { type: 'mood', kicker: 'The vibe', q: 'Comfort or discovery?', options: [
+  { kicker: 'The vibe', q: 'Comfort or discovery?', options: [
     { label: 'A cozy, familiar vibe', sub: 'Warm and easy', moods: ['cozy', 'feelgood'] },
     { label: 'Something bold & new', sub: 'Surprise me', moods: ['mindbending', 'intense'] },
   ] },
-
-  { type: 'match', a: byId('br2049'), b: byId('thebear') },
-  { type: 'match', a: byId('severance'), b: byId('eeaao') },
-
-  { type: 'mood', kicker: 'The clock', q: 'How much time have you got?', options: [
+  { kicker: 'The clock', q: 'How much time have you got?', options: [
     { label: 'A quick hit', sub: 'One and done', kind: 2 },
     { label: 'All night', sub: 'Let’s binge a series', kind: -2 },
     { label: 'Whatever’s great', sub: 'No rules', kind: 0 },
+  ] },
+  { kicker: 'Energy', q: 'How’s your energy right now?', options: [
+    { label: 'Wiped out', sub: 'Barely moving', moods: ['cozy', 'feelgood'] },
+    { label: 'Cruising', sub: 'Comfortably awake', moods: ['emotional'], dims: { drama: 1 } },
+    { label: 'Buzzing', sub: 'Ready to go', moods: ['intense'], dims: { action: 2 } },
+  ] },
+  { kicker: 'Weather of the mind', q: 'Pick tonight’s inner weather.', options: [
+    { label: 'Warm & sunny', sub: 'Light and bright', moods: ['feelgood'], dims: { comedy: 1 } },
+    { label: 'Cozy & rainy', sub: 'Soft and slow', moods: ['cozy', 'emotional'] },
+    { label: 'Electric storm', sub: 'Charged up', moods: ['intense'], dims: { thriller: 1 } },
+    { label: 'Foggy & strange', sub: 'Hard to read', moods: ['mindbending'], dims: { mystery: 1 } },
+  ] },
+  { kicker: 'The snack', q: 'Tonight’s snack says it all.', options: [
+    { label: 'Comfort takeout', sub: 'The usual', moods: ['cozy', 'feelgood'] },
+    { label: 'A proper dinner', sub: 'Make it nice', moods: ['emotional'], dims: { drama: 1 } },
+    { label: 'Popcorn & soda', sub: 'Big screen energy', moods: ['epic'], dims: { action: 2 } },
+    { label: 'Strong black coffee', sub: 'Stay sharp', moods: ['mindbending', 'intense'] },
+  ] },
+  { kicker: 'Lead with your…', q: 'Tonight you’re thinking with your…', options: [
+    { label: 'Heart', sub: 'Feel everything', moods: ['emotional'], dims: { romance: 2 } },
+    { label: 'Head', sub: 'Figure it out', moods: ['mindbending'], dims: { mystery: 1 } },
+    { label: 'Gut', sub: 'Just react', moods: ['intense'], dims: { action: 1 } },
+  ] },
+  { kicker: 'Tonight you want to…', q: 'What are you really after?', options: [
+    { label: 'Escape somewhere else', sub: 'Take me away', moods: ['epic'], dims: { fantasy: 2, scifi: 1 } },
+    { label: 'Feel something real', sub: 'Ground me', moods: ['emotional'], dims: { drama: 2 } },
+    { label: 'Just laugh it off', sub: 'Lighten up', moods: ['feelgood'], dims: { comedy: 2 } },
+  ] },
+  { kicker: 'The stakes', q: 'How big should the stakes feel?', options: [
+    { label: 'Small & personal', sub: 'One life, up close', moods: ['cozy', 'emotional'], dims: { drama: 1 } },
+    { label: 'Twisty & clever', sub: 'Out-think it', moods: ['mindbending'], dims: { mystery: 2 } },
+    { label: 'The world on the line', sub: 'Everything at once', moods: ['epic'], dims: { action: 1, scifi: 1 } },
   ] },
 ];
