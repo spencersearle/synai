@@ -21,6 +21,8 @@ window.SynaiQuiz = function () {
   let maturCap = 9;   // age-rating ceiling (1=family … 3=mature, 9=anything)
   let kindOnly = null;// 'Movie' or 'Series' to hard-restrict the result type
   let pickedGenres = []; // TMDB genre ids the user tapped (multi-select)
+  let pickedKeywords = []; // TMDB theme keyword ids (multi-select)
+  let filters = {};   // concrete query constraints: dateGte/Lte, lang, runtime*, acclaim
   let index = 0;
   const history = []; // deltas, for Back
 
@@ -47,17 +49,22 @@ window.SynaiQuiz = function () {
      The core questions (mature?, craving?, era?) are always asked
      and lead the quiz; a random handful of the mood questions
      follow to fine-tune. No more movie-vs-movie matchups. */
-  // total questions = 3 core + 1 genre + MOOD_PER_QUIZ  (kept ≤ 15)
-  const MOOD_PER_QUIZ = 8;
+  // a few mood questions add nuance on top of the hard filters
+  const MOOD_PER_QUIZ = 3;
 
   const prep = (q) => ({ type: 'mood', kicker: q.kicker, q: q.q, options: shuffle(q.options.slice()) });
+  // filter questions keep their natural order (eras, lengths read better in sequence)
+  const prepOrdered = (q) => ({ type: 'mood', kicker: q.kicker, q: q.q, options: q.options.slice() });
 
   function buildQuiz() {
-    const core = CORE_QUESTIONS.map(prep);                       // always, in order
-    const genreQ = { type: 'genre', kicker: 'Your genres', q: 'Which genres are you feeling tonight? Pick any.' };
-    const extra = shuffle(MOOD_POOL).slice(0, MOOD_PER_QUIZ).map(prep);
-    // rating first, genres second, then the rest of core, then the sampled questions
-    return [core[0], genreQ].concat(core.slice(1), extra);
+    const maturity = prep(CORE_QUESTIONS[0]);
+    const movieShow = prep(CORE_QUESTIONS[1]);
+    const genreQ = { type: 'pick', target: 'genre', list: GENRE_PICKER, kicker: 'Your genres', q: 'Which genres are you feeling? Pick any.' };
+    const themeQ = { type: 'pick', target: 'keyword', list: KEYWORD_PICKER, kicker: 'The theme', q: 'Any themes you’re after? Pick any.' };
+    const filterQs = FILTER_QUESTIONS.map(prepOrdered);          // era, origin, length, pedigree
+    const moods = shuffle(MOOD_POOL).slice(0, MOOD_PER_QUIZ).map(prep);
+    // funnel: broad → specific, then a little mood nuance
+    return [maturity, movieShow, genreQ, themeQ].concat(filterQs, moods);
   }
 
   let QUESTIONS = buildQuiz();
@@ -72,15 +79,24 @@ window.SynaiQuiz = function () {
       if (sign > 0) { d._prevMatur = maturCap; maturCap = d.maturity; }
       else { maturCap = (d._prevMatur != null) ? d._prevMatur : 9; }
     }
-    // genre picks are a set; stash the previous list for Back
+    // genre / keyword picks are sets; stash the previous list for Back
     if (d.genres) {
       if (sign > 0) { d._prevGenres = pickedGenres.slice(); pickedGenres = d.genres.slice(); }
       else { pickedGenres = d._prevGenres ? d._prevGenres.slice() : []; }
+    }
+    if (d.keywords) {
+      if (sign > 0) { d._prevKeywords = pickedKeywords.slice(); pickedKeywords = d.keywords.slice(); }
+      else { pickedKeywords = d._prevKeywords ? d._prevKeywords.slice() : []; }
     }
     // movie/show is a hard choice (set, not added); stash previous for Back
     if ('only' in d) {
       if (sign > 0) { d._prevOnly = kindOnly; kindOnly = d.only || null; }
       else { kindOnly = (d._prevOnly !== undefined) ? d._prevOnly : null; }
+    }
+    // filter constraints (era/origin/length/pedigree) — stash prev values for Back
+    if (d.set) {
+      if (sign > 0) { d._prevSet = {}; for (const k in d.set) { d._prevSet[k] = filters[k]; filters[k] = d.set[k]; } }
+      else if (d._prevSet) { for (const k in d._prevSet) filters[k] = d._prevSet[k]; }
     }
   }
 
@@ -94,15 +110,16 @@ window.SynaiQuiz = function () {
 
     els.prompt.textContent = q.q;
 
-    if (q.type === 'genre') {
+    if (q.type === 'pick') {
+      const chosen = q.target === 'genre' ? pickedGenres : pickedKeywords;
       els.body.className = 'genre-pick';
       els.body.innerHTML =
         '<div class="gp-grid">' +
-          GENRE_PICKER.map((g) => `<button class="gp-chip" type="button" data-g="${g.id}">${g.label}</button>`).join('') +
+          q.list.map((g) => `<button class="gp-chip" type="button" data-g="${g.id}">${g.label}</button>`).join('') +
         '</div>' +
         '<button class="btn gp-next" type="button" data-gnext>Continue <span class="arr">→</span></button>';
-      // restore any earlier picks (for Back)
-      pickedGenres.forEach((id) => {
+      // restore earlier picks (for Back)
+      chosen.forEach((id) => {
         const b = els.body.querySelector(`[data-g="${id}"]`);
         if (b) b.classList.add('on');
       });
@@ -132,15 +149,18 @@ window.SynaiQuiz = function () {
 
   els.body.addEventListener('click', (e) => {
     const q = QUESTIONS[index];
-    if (q.type === 'genre') {
+    if (q.type === 'pick') {
       const chip = e.target.closest('[data-g]');
       if (chip) { chip.classList.toggle('on'); return; }
       if (e.target.closest('[data-gnext]')) {
         const ids = Array.from(els.body.querySelectorAll('.gp-chip.on')).map((b) => +b.dataset.g);
-        const dims = (window.SynaiTMDB && window.SynaiTMDB.genreToDims) ? window.SynaiTMDB.genreToDims(ids) : {};
-        // scale the genre boost a touch so it leans the ranking meaningfully
-        for (const k in dims) dims[k] *= 2;
-        advance({ taste: dims, mood: {}, genres: ids }, null);
+        if (q.target === 'genre') {
+          const dims = (window.SynaiTMDB && window.SynaiTMDB.genreToDims) ? window.SynaiTMDB.genreToDims(ids) : {};
+          for (const k in dims) dims[k] *= 2; // lean the ranking meaningfully
+          advance({ taste: dims, mood: {}, genres: ids }, null);
+        } else {
+          advance({ taste: {}, mood: {}, keywords: ids }, null);
+        }
       }
       return;
     }
@@ -151,7 +171,8 @@ window.SynaiQuiz = function () {
         taste: o.dims || {}, mood: moodsToObj(o.moods),
         kind: o.kind || 0, recency: o.recency || 0, maturity: o.maturity,
       };
-      if ('only' in o) delta.only = o.only || null; // movie/show question only
+      if ('only' in o) delta.only = o.only || null; // movie/show question
+      if (o.set) delta.set = o.set;                  // filter question (era/origin/length/pedigree)
       advance(delta, opt);
     }
   });
@@ -197,14 +218,22 @@ window.SynaiQuiz = function () {
      NEVER include PG-13+, plus any curated titles that fit the cap. */
   async function buildPool() {
     let pool = [];
-    if (window.SynaiTMDB && window.SynaiTMDB.loadRatedPool) {
-      pool = await window.SynaiTMDB.loadRatedPool(maturCap, pickedGenres);
+    if (window.SynaiTMDB && window.SynaiTMDB.discoverPrecise) {
+      pool = await window.SynaiTMDB.discoverPrecise({
+        cap: maturCap, kindOnly,
+        genreIds: pickedGenres, keywordIds: pickedKeywords,
+        dateGte: filters.dateGte, dateLte: filters.dateLte,
+        lang: filters.lang, runtimeGte: filters.runtimeGte, runtimeLte: filters.runtimeLte,
+        acclaim: filters.acclaim,
+      });
     }
-    // which Synai genre-keys did the picks map to? (used to keep curated relevant)
+    // fold in curated titles that satisfy the chosen genres + rating cap
     const wantKeys = (window.SynaiTMDB && window.SynaiTMDB.genreToDims)
       ? Object.keys(window.SynaiTMDB.genreToDims(pickedGenres)) : [];
     const fit = (typeof CURATED !== 'undefined' ? CURATED : []).filter((m) =>
-      ratingFitsCap(m.rating, maturCap) && (!wantKeys.length || wantKeys.includes(m.genre)));
+      ratingFitsCap(m.rating, maturCap)
+      && (!wantKeys.length || wantKeys.includes(m.genre))
+      && (!filters.lang || filters.lang === 'en'));      // curated set is English-language
     fit.forEach((m) => { m._capSafe = maturCap; });
     const seenIds = new Set(pool.map((m) => m.id));
     fit.forEach((m) => { if (!seenIds.has(m.id)) { seenIds.add(m.id); pool.push(m); } });
@@ -234,20 +263,30 @@ window.SynaiQuiz = function () {
     const g = topKeys(taste, 2).map((k) => GENRE_LABEL[k]);
     const md = topKeys(mood, 2).map((k) => MOOD_LABEL[k]);
     const pills = [];
+    const pill = (txt) => pills.push(`<span class="taste-pill">${txt}</span>`);
+    if (kindOnly === 'Movie') pill('Just <b>Movies</b>');
+    else if (kindOnly === 'Series') pill('Just <b>Shows</b>');
     if (pickedGenres.length) {
       const names = GENRE_PICKER.filter((x) => pickedGenres.includes(x.id)).map((x) => x.label).slice(0, 4);
-      if (names.length) pills.push(`<span class="taste-pill">You picked <b>${names.join(', ')}</b></span>`);
+      if (names.length) pill(`<b>${names.join(', ')}</b>`);
     }
-    md.forEach((x) => pills.push(`<span class="taste-pill">In the mood for <b>${x}</b></span>`));
-    g.forEach((x) => pills.push(`<span class="taste-pill">You lean <b>${x}</b></span>`));
-    if (kindOnly === 'Movie') pills.push(`<span class="taste-pill">Just <b>Movies</b></span>`);
-    else if (kindOnly === 'Series') pills.push(`<span class="taste-pill">Just <b>Shows</b></span>`);
-    else if (kindBias > 1) pills.push(`<span class="taste-pill">Leaning toward <b>Movies</b></span>`);
-    else if (kindBias < -1) pills.push(`<span class="taste-pill">Leaning toward <b>Series</b></span>`);
-    if (recencyBias > 1) pills.push(`<span class="taste-pill">Prefer <b>recent</b> picks</span>`);
-    else if (recencyBias < -1) pills.push(`<span class="taste-pill">Prefer <b>timeless</b> picks</span>`);
+    if (pickedKeywords.length) {
+      const names = KEYWORD_PICKER.filter((x) => pickedKeywords.includes(x.id)).map((x) => x.label).slice(0, 3);
+      if (names.length) pill(`Theme: <b>${names.join(', ')}</b>`);
+    }
+    const eraTxt = filters.dateGte || filters.dateLte
+      ? (filters.dateGte ? filters.dateGte.slice(0, 4) : 'pre') + (filters.dateLte && filters.dateGte ? 's' : (filters.dateLte ? '-' + filters.dateLte.slice(0, 4) : 's'))
+      : '';
+    if (filters.dateGte || filters.dateLte) pill(`Era: <b>${eraTxt}</b>`);
+    const langName = { en: 'English', ko: 'Korean', ja: 'Japanese', es: 'Spanish' }[filters.lang];
+    if (langName) pill(`<b>${langName}</b>`);
+    if (filters.runtimeLte && !filters.runtimeGte) pill('<b>Short</b>');
+    else if (filters.runtimeGte && filters.runtimeGte >= 140) pill('<b>Epic length</b>');
+    const accName = { acclaimed: 'Acclaimed', popular: 'Crowd-pleasers', hidden: 'Hidden gems' }[filters.acclaim];
+    if (accName) pill(`<b>${accName}</b>`);
+    md.forEach((x) => pill(`In the mood for <b>${x}</b>`));
     const matLabel = { 1: 'Family-friendly', 2: 'Up to PG-13', 3: 'Mature is fine' }[maturCap];
-    if (matLabel) pills.push(`<span class="taste-pill">Keeping it <b>${matLabel}</b></span>`);
+    if (matLabel) pill(`Keeping it <b>${matLabel}</b>`);
     els.summary.innerHTML = pills.length ? pills.join('') : `<span class="taste-pill">A bit of everything</span>`;
 
     els.grid.innerHTML = top.map((r, i) => {
@@ -279,7 +318,9 @@ window.SynaiQuiz = function () {
   els.retake.addEventListener('click', () => {
     for (const k in taste) delete taste[k];
     for (const k in mood) delete mood[k];
-    kindBias = 0; recencyBias = 0; maturCap = 9; kindOnly = null; pickedGenres = []; history.length = 0; index = 0;
+    kindBias = 0; recencyBias = 0; maturCap = 9; kindOnly = null;
+    pickedGenres = []; pickedKeywords = []; filters = {};
+    history.length = 0; index = 0;
     QUESTIONS = buildQuiz(); // fresh, different questions each time
     els.results.classList.remove('show');
     els.card.style.display = '';

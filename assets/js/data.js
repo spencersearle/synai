@@ -103,10 +103,8 @@ const MOOD_POOL = [
 ];
 
 /* ------------------------------------------------------------
-   CORE questions are asked EVERY run (not sampled). They pin
-   down the things that matter most: how mature, what they're
-   craving, and how recent. The rating option carries `maturity`
-   (a ceiling, see quiz.js) and the era option carries `recency`.
+   CORE questions — asked every run. The rating option carries a
+   `maturity` ceiling; the movie/show option carries a hard `only`.
    ------------------------------------------------------------ */
 const CORE_QUESTIONS = [
   { kicker: 'Comfort zone', q: 'How mature should it get?', options: [
@@ -115,30 +113,49 @@ const CORE_QUESTIONS = [
     { label: 'Mature is fine', sub: 'R / TV-MA welcome', maturity: 3 },
     { label: 'Anything goes', sub: 'No limits', maturity: 9 },
   ] },
-  { kicker: 'The craving', q: 'What are you really craving tonight?', options: [
-    { label: 'Thrills & action', sub: 'Adrenaline', dims: { action: 3 }, moods: ['intense', 'epic'] },
-    { label: 'Laughs', sub: 'Lighten me up', dims: { comedy: 3 }, moods: ['feelgood'] },
-    { label: 'Big feelings', sub: 'Drama & romance', dims: { drama: 3, romance: 1 }, moods: ['emotional'] },
-    { label: 'Other worlds', sub: 'Sci-fi & fantasy', dims: { scifi: 2, fantasy: 2 }, moods: ['epic', 'mindbending'] },
-    { label: 'Mystery & crime', sub: 'A good puzzle', dims: { mystery: 2, crime: 2 }, moods: ['mindbending', 'intense'] },
-  ] },
   { kicker: 'Movie or show', q: 'A movie or a show tonight?', options: [
     { label: 'A movie', sub: 'One and done', only: 'Movie' },
     { label: 'A show', sub: 'A series to dig into', only: 'Series' },
     { label: 'Either is great', sub: 'Surprise me' },
   ] },
-  { kicker: 'Vintage', q: 'New releases or timeless?', options: [
-    { label: 'Fresh & recent', sub: 'The last few years', recency: 2 },
-    { label: 'Modern classics', sub: 'No strong preference', recency: 0 },
-    { label: 'Timeless & older', sub: 'Before the 2000s', recency: -2 },
-  ] },
 ];
 
 /* ------------------------------------------------------------
-   The full genre list (TMDB ids). Asked as a multi-select so
-   the user can tap every genre they feel like in the moment —
-   the picks narrow the live search pool for a precise match.
+   FILTER questions — each option carries a `set` that writes a
+   concrete TMDB query constraint (release window, language,
+   runtime, acclaim). These are what really pinpoint a title.
    ------------------------------------------------------------ */
+const FILTER_QUESTIONS = [
+  { kicker: 'The era', q: 'From which era?', options: [
+    { label: 'Brand new', sub: 'The 2020s', set: { dateGte: '2020-01-01', dateLte: null } },
+    { label: 'The 2010s', sub: '2010 – 2019', set: { dateGte: '2010-01-01', dateLte: '2019-12-31' } },
+    { label: 'The 2000s', sub: '2000 – 2009', set: { dateGte: '2000-01-01', dateLte: '2009-12-31' } },
+    { label: 'The 90s', sub: '1990 – 1999', set: { dateGte: '1990-01-01', dateLte: '1999-12-31' } },
+    { label: 'Classic', sub: '1980s & earlier', set: { dateGte: null, dateLte: '1989-12-31' } },
+    { label: 'Any era', sub: 'Doesn’t matter', set: { dateGte: null, dateLte: null } },
+  ] },
+  { kicker: 'Where it’s from', q: 'Any preference on where it’s from?', options: [
+    { label: 'Hollywood / English', sub: 'English-language', set: { lang: 'en' } },
+    { label: 'Korean', sub: 'K-cinema & dramas', set: { lang: 'ko' } },
+    { label: 'Japanese / anime', sub: 'From Japan', set: { lang: 'ja' } },
+    { label: 'Spanish-language', sub: 'Spain & Latin America', set: { lang: 'es' } },
+    { label: 'Anywhere', sub: 'No preference', set: { lang: null } },
+  ] },
+  { kicker: 'Length', q: 'How long do you want it?', options: [
+    { label: 'Short & snappy', sub: 'Under 1h40', set: { runtimeGte: null, runtimeLte: 100 } },
+    { label: 'Standard', sub: 'Around 2 hours', set: { runtimeGte: 95, runtimeLte: 140 } },
+    { label: 'Long & epic', sub: '2h20 and up', set: { runtimeGte: 140, runtimeLte: null } },
+    { label: 'Any length', sub: 'Doesn’t matter', set: { runtimeGte: null, runtimeLte: null } },
+  ] },
+  { kicker: 'Pedigree', q: 'Crowd-pleaser or critically acclaimed?', options: [
+    { label: 'Critically acclaimed', sub: 'Top-rated', set: { acclaim: 'acclaimed' } },
+    { label: 'Popular & loved', sub: 'Big crowd hits', set: { acclaim: 'popular' } },
+    { label: 'A hidden gem', sub: 'Underseen', set: { acclaim: 'hidden' } },
+    { label: 'Anything great', sub: 'No preference', set: { acclaim: null } },
+  ] },
+];
+
+/* The full genre list (TMDB ids) — multi-select. */
 const GENRE_PICKER = [
   { label: 'Action', id: 28 }, { label: 'Adventure', id: 12 }, { label: 'Animation', id: 16 },
   { label: 'Comedy', id: 35 }, { label: 'Crime', id: 80 }, { label: 'Documentary', id: 99 },
@@ -146,4 +163,15 @@ const GENRE_PICKER = [
   { label: 'History', id: 36 }, { label: 'Horror', id: 27 }, { label: 'Music', id: 10402 },
   { label: 'Mystery', id: 9648 }, { label: 'Romance', id: 10749 }, { label: 'Sci-Fi', id: 878 },
   { label: 'Thriller', id: 53 }, { label: 'War', id: 10752 }, { label: 'Western', id: 37 },
+];
+
+/* Common themes (TMDB keyword ids) — multi-select. The single
+   biggest lever for landing on a specific kind of story. */
+const KEYWORD_PICKER = [
+  { label: 'Superhero', id: 9715 }, { label: 'Heist', id: 10051 }, { label: 'Time travel', id: 4379 },
+  { label: 'Based on a true story', id: 9672 }, { label: 'Zombies', id: 12377 }, { label: 'Spy / espionage', id: 5265 },
+  { label: 'Coming-of-age', id: 376648 }, { label: 'Post-apocalyptic', id: 4458 }, { label: 'Dystopia', id: 4565 },
+  { label: 'Aliens', id: 9951 }, { label: 'Serial killer', id: 10714 }, { label: 'Supernatural', id: 6152 },
+  { label: 'High school', id: 6270 }, { label: 'Road trip', id: 7312 }, { label: 'Sports', id: 6075 },
+  { label: 'Christmas', id: 207317 }, { label: 'Vampires', id: 3133 }, { label: 'Robots / AI', id: 14544 },
 ];

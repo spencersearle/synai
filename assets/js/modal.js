@@ -23,7 +23,9 @@
 
   // paint the parts we always know about; called again after enrichment
   function paint(m) {
-    els.meta.innerHTML = `${m.year} · ${m.kind} · <span class="m-rating">${m.rating}</span> · ${GENRE_LABEL[m.genre]}`;
+    const hasRating = m.rating && m.rating !== 'NR';
+    const ratingChip = hasRating ? `<span class="m-rating">${m.rating}</span> · ` : '';
+    els.meta.innerHTML = `${m.year} · ${m.kind} · ${ratingChip}${GENRE_LABEL[m.genre]}`;
 
     const isMovie = m.kind === 'Movie';
     const lengthText = isMovie

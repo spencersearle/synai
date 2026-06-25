@@ -85,7 +85,7 @@
       year: date ? +date.slice(0, 4) : '',
       kind,
       genre: pickGenre(tags),
-      rating: 'NR',                 // filled on enrich
+      rating: '',                   // filled on enrich
       poster,
       tags,
       moods: buildMoods(tags),
@@ -220,15 +220,85 @@
     return pool;
   }
 
+  /* ---- PRECISE discover: every quiz answer → a query filter
+     (release window, language, runtime, themes, acclaim, genres,
+     maturity) so the answers converge on specific titles. Relaxes
+     the keyword constraint if the result set would be too thin. */
+  async function discoverPrecise(o, relaxKeywords) {
+    const cap = o.cap || 9;
+    const certLte = CERT_FOR_CAP[cap] || 'R';
+    let sort = 'popularity.desc';
+    const acc = {};
+    if (o.acclaim === 'acclaimed') { sort = 'vote_average.desc'; acc['vote_average.gte'] = 7; acc['vote_count.gte'] = 300; }
+    else if (o.acclaim === 'hidden') { sort = 'vote_average.desc'; acc['vote_average.gte'] = 6.5; acc['vote_count.gte'] = 40; acc['vote_count.lte'] = 1500; }
+    else { acc['vote_count.gte'] = 40; }
+
+    const genres = (o.genreIds || []).filter((x) => x != null);
+    const keywords = (!relaxKeywords && o.keywordIds || []).filter((x) => x != null);
+
+    // US cert filter only works for titles that HAVE a US rating (i.e. English
+    // releases). For foreign-language picks, drop it so results aren't empty.
+    const useCert = cap < 9 && (!o.lang || o.lang === 'en');
+    const movieP = { include_adult: 'false', sort_by: sort, ...acc };
+    if (useCert) { movieP.certification_country = 'US'; movieP['certification.lte'] = certLte; }
+    if (genres.length) movieP.with_genres = genres.join('|');
+    if (keywords.length) movieP.with_keywords = keywords.join('|');
+    if (o.dateGte) movieP['primary_release_date.gte'] = o.dateGte;
+    if (o.dateLte) movieP['primary_release_date.lte'] = o.dateLte;
+    if (o.lang) movieP.with_original_language = o.lang;
+    if (o.runtimeGte) movieP['with_runtime.gte'] = o.runtimeGte;
+    if (o.runtimeLte) movieP['with_runtime.lte'] = o.runtimeLte;
+
+    const tvP = { include_adult: 'false', sort_by: sort, ...acc };
+    if (cap === 1) tvP.with_genres = '10751|10762';      // family/kids only when family-friendly
+    else if (genres.length) {
+      const tvIds = [...new Set(genres.map((id) => MOVIE_TO_TV[id]).filter((x) => x != null))];
+      if (tvIds.length) tvP.with_genres = tvIds.join('|');
+    }
+    if (keywords.length) tvP.with_keywords = keywords.join('|');
+    if (o.dateGte) tvP['first_air_date.gte'] = o.dateGte;
+    if (o.dateLte) tvP['first_air_date.lte'] = o.dateLte;
+    if (o.lang) tvP.with_original_language = o.lang;
+
+    const wantMovies = o.kindOnly !== 'Series';
+    const wantTv = o.kindOnly !== 'Movie';
+    const [movies, tv] = await Promise.all([
+      wantMovies ? discover('/discover/movie', 'Movie', 1, 3, movieP) : Promise.resolve([]),
+      wantTv ? discover('/discover/tv', 'Series', 1, 2, tvP) : Promise.resolve([]),
+    ]);
+    if (useCert) movies.forEach((m) => { m._capSafe = cap; });  // only when truly cert-bounded
+    if (cap === 1) tv.forEach((m) => { m._capSafe = cap; });
+    let pool = interleave(movies, tv);
+
+    // over-constrained? drop the theme keywords and try once more
+    if (pool.length < 6 && keywords.length && !relaxKeywords) {
+      const fallback = await discoverPrecise(o, true);
+      const seenIds = new Set(pool.map((m) => m.id));
+      fallback.forEach((m) => { if (!seenIds.has(m.id)) pool.push(m); });
+    }
+    absorb(pool);
+    return pool;
+  }
+
   /* ---- lazy detail enrichment (modal) --------------------- */
+  // pull a real age rating — prefer US, then a few common countries, then any
+  const PREF = ['US', 'GB', 'CA', 'AU', 'IE', 'NZ'];
   function usCert(item) {
     if (item.kind === 'Movie') {
-      const us = (item.release_dates && item.release_dates.results || []).find((r) => r.iso_3166_1 === 'US');
-      const cert = us && us.release_dates.map((d) => d.certification).find(Boolean);
-      return cert || 'NR';
+      const results = item.release_dates && item.release_dates.results || [];
+      const certOf = (code) => {
+        const r = results.find((x) => x.iso_3166_1 === code);
+        return r && r.release_dates.map((d) => d.certification).find(Boolean);
+      };
+      for (const code of PREF) { const c = certOf(code); if (c) return c; }
+      // any country with a certification
+      for (const r of results) { const c = r.release_dates.map((d) => d.certification).find(Boolean); if (c) return c; }
+      return '';
     }
-    const us = (item.content_ratings && item.content_ratings.results || []).find((r) => r.iso_3166_1 === 'US');
-    return (us && us.rating) || 'NR';
+    const results = item.content_ratings && item.content_ratings.results || [];
+    for (const code of PREF) { const r = results.find((x) => x.iso_3166_1 === code); if (r && r.rating) return r.rating; }
+    const any = results.find((r) => r.rating);
+    return (any && any.rating) || '';
   }
 
   async function enrich(m) {
@@ -311,7 +381,7 @@
     } catch (e) { return []; }
   }
 
-  window.SynaiTMDB = { loadCatalog, loadMore, loadRatedPool, enrich, search, isHomeSafe, genreToDims };
+  window.SynaiTMDB = { loadCatalog, loadMore, loadRatedPool, discoverPrecise, enrich, search, isHomeSafe, genreToDims };
 
   /* ---- big white squiggles across the background ----------
      Each is a full-width wavy line. They're laid into evenly
